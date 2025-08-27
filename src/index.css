@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add padding to body to account for fixed footer */
+body {
+  padding-bottom: 40px;
+}
