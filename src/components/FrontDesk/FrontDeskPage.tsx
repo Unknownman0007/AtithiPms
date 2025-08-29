@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useData } from '../../contexts/DataContext';
 import { Clock, UserCheck, UserX, Key, AlertCircle, CheckCircle, Users, Calendar } from 'lucide-react';
+import CheckoutModal from './CheckoutModal';
 
 const FrontDeskPage: React.FC = () => {
   const { reservations, guests, rooms, updateReservation } = useData();
   const [selectedTab, setSelectedTab] = useState('arrivals');
+  const [checkoutReservation, setCheckoutReservation] = useState(null);
 
   const today = new Date();
   const todayString = today.toDateString();
@@ -26,7 +28,10 @@ const FrontDeskPage: React.FC = () => {
   };
 
   const handleCheckOut = (reservationId: string) => {
-    updateReservation(reservationId, { status: 'checkedOut' });
+    const reservation = reservations.find(r => r.id === reservationId);
+    if (reservation) {
+      setCheckoutReservation(reservation);
+    }
   };
 
   const tabs = [
@@ -311,6 +316,18 @@ const FrontDeskPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Checkout Modal */}
+      {checkoutReservation && (
+        <CheckoutModal
+          reservation={checkoutReservation}
+          onClose={() => setCheckoutReservation(null)}
+          onComplete={() => {
+            // Refresh the page data or show success message
+            setCheckoutReservation(null);
+          }}
+        />
+      )}
     </div>
   );
 };
