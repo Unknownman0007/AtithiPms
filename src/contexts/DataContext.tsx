@@ -160,11 +160,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateRoom = (id: string, roomUpdate: Partial<Room>) => {
-    const updatedRooms = rooms.map(room => 
-      room.id === id ? { ...room, ...roomUpdate } : room
-    );
-    setRooms(updatedRooms);
-    saveToStorage('atithi_rooms', updatedRooms);
+    return new Promise<void>((resolve) => {
+      const updatedRooms = rooms.map(room => 
+        room.id === id ? { ...room, ...roomUpdate } : room
+      );
+      setRooms(updatedRooms);
+      saveToStorage('atithi_rooms', updatedRooms);
+      resolve();
+    });
   };
 
   const addGuest = (guest: Omit<Guest, 'id' | 'bookingHistory'>) => {
@@ -203,11 +206,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateReservation = (id: string, reservationUpdate: Partial<Reservation>) => {
-    const updatedReservations = reservations.map(reservation => 
-      reservation.id === id ? { ...reservation, ...reservationUpdate } : reservation
-    );
-    setReservations(updatedReservations);
-    saveToStorage('atithi_reservations', updatedReservations);
+    return new Promise<void>((resolve) => {
+      const updatedReservations = reservations.map(reservation => 
+        reservation.id === id ? { ...reservation, ...reservationUpdate } : reservation
+      );
+      setReservations(updatedReservations);
+      saveToStorage('atithi_reservations', updatedReservations);
+      resolve();
+    });
   };
 
   const cancelReservation = (id: string) => {

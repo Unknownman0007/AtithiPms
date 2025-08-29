@@ -1,6 +1,7 @@
 import React from 'react';
 import { useData, Reservation } from '../../contexts/DataContext';
 import { Calendar, User, Building2, DollarSign, Edit, Trash2, CheckCircle, XCircle, Clock, Users } from 'lucide-react';
+import CheckoutModal from '../FrontDesk/CheckoutModal';
 
 interface ReservationsListProps {
   reservations: Reservation[];
@@ -9,6 +10,7 @@ interface ReservationsListProps {
 
 const ReservationsList: React.FC<ReservationsListProps> = ({ reservations, onEdit }) => {
   const { guests, rooms, updateReservation, cancelReservation } = useData();
+  const [checkoutReservation, setCheckoutReservation] = React.useState(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -69,6 +71,10 @@ const ReservationsList: React.FC<ReservationsListProps> = ({ reservations, onEdi
     if (window.confirm('Are you sure you want to cancel this reservation?')) {
       cancelReservation(reservationId);
     }
+  };
+
+  const handleCheckout = (reservation: Reservation) => {
+    setCheckoutReservation(reservation);
   };
 
   const formatDate = (date: Date) => {
@@ -218,8 +224,18 @@ const ReservationsList: React.FC<ReservationsListProps> = ({ reservations, onEdi
                           <option value="tentative">Tentative</option>
                           <option value="confirmed">Confirmed</option>
                           <option value="checkedIn">Check In</option>
-                          <option value="checkedOut">Check Out</option>
                         </select>
+                      )}
+                      
+                      {/* Quick Checkout Button */}
+                      {reservation.status === 'checkedIn' && (
+                        <button
+                          onClick={() => handleCheckout(reservation)}
+                          className="p-1 text-green-600 hover:text-green-800 hover:bg-green-50 rounded transition-colors"
+                          title="Check Out Guest"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </button>
                       )}
                       
                       {/* Edit Button */}
@@ -255,6 +271,17 @@ const ReservationsList: React.FC<ReservationsListProps> = ({ reservations, onEdi
           </tbody>
         </table>
       </div>
+
+      {/* Checkout Modal */}
+      {checkoutReservation && (
+        <CheckoutModal
+          reservation={checkoutReservation}
+          onClose={() => setCheckoutReservation(null)}
+          onComplete={() => {
+            setCheckoutReservation(null);
+          }}
+        />
+      )}
     </div>
   );
 };
