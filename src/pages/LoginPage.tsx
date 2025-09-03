@@ -42,7 +42,7 @@ const LoginPage: React.FC = () => {
               <Hotel className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Atithi PMS</h1>
-            <p className="text-gray-600">Property Management System</p>
+            <p className="text-gray-600">Property Management System by Naveen Kumar</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
