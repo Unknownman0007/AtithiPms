@@ -142,7 +142,9 @@ const ReservationForm: React.FC<ReservationFormProps> = ({ reservation, onClose 
 
       // Create new guest if needed
       if (isNewGuest) {
-        guestId = addGuest(newGuest);
+        const createdGuest = addGuest(newGuest);
+        guestId = createdGuest.id;
+        setSelectedGuest(createdGuest);
       }
 
       if (!guestId || !selectedRoom) return;

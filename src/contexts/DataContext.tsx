@@ -176,7 +176,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const updatedGuests = [...guests, newGuest];
     setGuests(updatedGuests);
     saveToStorage('atithi_guests', updatedGuests);
-    return newGuestId;
+    return newGuest;
   };
 
   const updateGuest = (id: string, guestUpdate: Partial<Guest>) => {
