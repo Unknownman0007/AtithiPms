@@ -42,7 +42,7 @@ const LoginPage: React.FC = () => {
               <Hotel className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Atithi PMS</h1>
-            <p className="text-gray-600">Property Management System by Naveen Kumar Asst. Prof. at asia pacific institute of hotel management</p>
+            <p className="text-gray-600">Property Management System</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -128,7 +128,7 @@ const LoginPage: React.FC = () => {
 
         <div className="text-center mt-6">
           <p className="text-sm text-gray-500">
-            Open Source Property Management System for Educational Use
+            Open Source Property Management System for Educational Use by Naveen Kumar Asst. Prof. at asia pacific institute of hotel management
           </p>
         </div>
       </div>
