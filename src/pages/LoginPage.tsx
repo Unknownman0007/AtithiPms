@@ -128,7 +128,7 @@ const LoginPage: React.FC = () => {
 
         <div className="text-center mt-6">
           <p className="text-sm text-gray-500">
-            Open Source Property Management System for Educational Use by Naveen Kumar Asst. Prof. at asia pacific institute of hotel management
+            Open Source Property Management System for Educational Use by Naveen Kumar Asst. Prof. at Asia Pacific Institute of Hotel Management
           </p>
         </div>
       </div>
