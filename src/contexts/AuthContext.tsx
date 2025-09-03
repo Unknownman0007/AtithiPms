@@ -25,8 +25,7 @@ export const useAuth = () => {
 
 const defaultUsers = [
   { id: '1', email: 'admin@atithi.com', password: 'admin123', name: 'Hotel Manager', role: 'admin' as const },
-  { id: '2', email: 'receptionist@atithi.com', password: 'receptionist123', name: 'Front Desk Agent', role: 'receptionist' as const },
-  { id: '3', email: 'student@atithi.com', password: 'student123', name: 'Training Student', role: 'student' as const },
+  
 ];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
