@@ -171,10 +171,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addGuest = (guest: Omit<Guest, 'id' | 'bookingHistory'>) => {
-    const newGuest = { ...guest, id: Date.now().toString(), bookingHistory: [] };
+    const newGuestId = Date.now().toString();
+    const newGuest = { ...guest, id: newGuestId, bookingHistory: [] };
     const updatedGuests = [...guests, newGuest];
     setGuests(updatedGuests);
     saveToStorage('atithi_guests', updatedGuests);
+    return newGuestId;
   };
 
   const updateGuest = (id: string, guestUpdate: Partial<Guest>) => {
