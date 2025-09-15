@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Settings, User, Building, CreditCard, Bell, Shield, Database, Download, Upload, Trash2 } from 'lucide-react';
+import { Settings, User, Building, CreditCard, Bell, Shield, Database, Download, Upload, Trash2, CheckCircle, XCircle } from 'lucide-react';
 
 const SettingsPage: React.FC = () => {
   const { user } = useAuth();
