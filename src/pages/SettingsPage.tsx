@@ -256,26 +256,263 @@ const SettingsPage: React.FC = () => {
         return renderDataManagement();
       case 'billing':
         return (
-          <div className="text-center py-12">
-            <CreditCard className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Billing Settings</h3>
-            <p className="text-gray-600">Billing management will be available in the full version.</p>
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900">Billing & Payments</h3>
+            
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h4 className="text-md font-semibold text-gray-900 mb-4">Payment Methods</h4>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <CreditCard className="w-6 h-6 text-blue-600" />
+                    <div>
+                      <p className="font-medium text-gray-900">Credit Card Processing</p>
+                      <p className="text-sm text-gray-600">Accept Visa, MasterCard, American Express</p>
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <DollarSign className="w-6 h-6 text-green-600" />
+                    <div>
+                      <p className="font-medium text-gray-900">UPI Payments</p>
+                      <p className="text-sm text-gray-600">Accept UPI payments from guests</p>
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <CreditCard className="w-6 h-6 text-purple-600" />
+                    <div>
+                      <p className="font-medium text-gray-900">Cash Payments</p>
+                      <p className="text-sm text-gray-600">Accept cash at front desk</p>
+                    </div>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h4 className="text-md font-semibold text-gray-900 mb-4">Tax Settings</h4>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">GST Rate (%)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    defaultValue="18.00"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Service Charge (%)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    defaultValue="10.00"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         );
       case 'notifications':
         return (
-          <div className="text-center py-12">
-            <Bell className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Notification Settings</h3>
-            <p className="text-gray-600">Notification preferences will be available in the full version.</p>
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900">Notification Preferences</h3>
+            
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h4 className="text-md font-semibold text-gray-900 mb-4">Email Notifications</h4>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">New Reservations</p>
+                    <p className="text-sm text-gray-600">Get notified when new bookings are made</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Check-in Reminders</p>
+                    <p className="text-sm text-gray-600">Daily summary of expected arrivals</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Payment Alerts</p>
+                    <p className="text-sm text-gray-600">Notifications for payment confirmations</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h4 className="text-md font-semibold text-gray-900 mb-4">SMS Notifications</h4>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Booking Confirmations</p>
+                    <p className="text-sm text-gray-600">Send SMS confirmations to guests</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Check-in Instructions</p>
+                    <p className="text-sm text-gray-600">Send check-in details before arrival</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         );
       case 'security':
         return (
-          <div className="text-center py-12">
-            <Shield className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Security Settings</h3>
-            <p className="text-gray-600">Advanced security options will be available in the full version.</p>
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900">Security & Access</h3>
+            
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h4 className="text-md font-semibold text-gray-900 mb-4">Password Policy</h4>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Require Strong Passwords</p>
+                    <p className="text-sm text-gray-600">Minimum 8 characters with special characters</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" className="sr-only peer" defaultChecked />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">Auto Logout</p>
+                    <p className="text-sm text-gray-600">Automatically logout after inactivity</p>
+                  </div>
+                  <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option>15 minutes</option>
+                    <option>30 minutes</option>
+                    <option>1 hour</option>
+                    <option>2 hours</option>
+                    <option>Never</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg p-6 border border-gray-200">
+              <h4 className="text-md font-semibold text-gray-900 mb-4">User Permissions</h4>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="font-medium text-gray-900 mb-2">Administrator</p>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Full system access</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>User management</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Financial reports</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>System settings</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="font-medium text-gray-900 mb-2">Front Desk Agent</p>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Reservations</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Check-in/out</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Guest management</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <XCircle className="w-4 h-4 text-red-600" />
+                      <span>Financial reports</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="font-medium text-gray-900 mb-2">Training Student</p>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>View reservations</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Practice mode</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <XCircle className="w-4 h-4 text-red-600" />
+                      <span>Delete data</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <XCircle className="w-4 h-4 text-red-600" />
+                      <span>Financial access</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         );
       default:

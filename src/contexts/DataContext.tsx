@@ -176,7 +176,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const updatedGuests = [...guests, newGuest];
     setGuests(updatedGuests);
     saveToStorage('atithi_guests', updatedGuests);
-    return newGuest;
+    return newGuestId;
   };
 
   const updateGuest = (id: string, guestUpdate: Partial<Guest>) => {
@@ -198,13 +198,19 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveToStorage('atithi_reservations', updatedReservations);
 
     // Update guest booking history
-    const updatedGuests = guests.map(guest =>
-      guest.id === reservation.guestId
-        ? { ...guest, bookingHistory: [...guest.bookingHistory, newReservation.id] }
-        : guest
-    );
-    setGuests(updatedGuests);
-    saveToStorage('atithi_guests', updatedGuests);
+    setTimeout(() => {
+      setGuests(currentGuests => {
+        const updatedGuests = currentGuests.map(guest =>
+          guest.id === reservation.guestId
+            ? { ...guest, bookingHistory: [...guest.bookingHistory, newReservation.id] }
+            : guest
+        );
+        saveToStorage('atithi_guests', updatedGuests);
+        return updatedGuests;
+      });
+    }, 100);
+    
+    return newReservation;
   };
 
   const updateReservation = (id: string, reservationUpdate: Partial<Reservation>) => {
