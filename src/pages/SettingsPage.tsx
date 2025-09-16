@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useData } from '../contexts/DataContext';
 import { Settings, User, Building, CreditCard, Bell, Shield, Database, Download, Upload, Trash2, CheckCircle, XCircle } from 'lucide-react';
 
 const SettingsPage: React.FC = () => {
   const { user } = useAuth();
+  const { deleteAllData } = useData();
   const [activeTab, setActiveTab] = useState('profile');
 
   const tabs = [
@@ -14,6 +16,32 @@ const SettingsPage: React.FC = () => {
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'data', label: 'Data Management', icon: Database },
   ];
+
+  const handleDeleteAllData = () => {
+    const confirmMessage = "Are you sure you want to delete ALL data? This will:\n\n" +
+      "• Delete all reservations\n" +
+      "• Delete all guest profiles\n" +
+      "• Reset rooms to default configuration\n" +
+      "• Clear all booking history\n\n" +
+      "This action CANNOT be undone!\n\n" +
+      "Type 'DELETE ALL DATA' to confirm:";
+    
+    const userInput = prompt(confirmMessage);
+    
+    if (userInput === 'DELETE ALL DATA') {
+      try {
+        deleteAllData();
+        alert('All data has been successfully deleted and reset to defaults.');
+        // Optionally reload the page to ensure clean state
+        window.location.reload();
+      } catch (error) {
+        alert('Error deleting data. Please try again.');
+        console.error('Delete all data error:', error);
+      }
+    } else if (userInput !== null) {
+      alert('Deletion cancelled. You must type exactly "DELETE ALL DATA" to confirm.');
+    }
+  };
 
   const renderProfileSettings = () => (
     <div className="space-y-6">
@@ -237,9 +265,23 @@ const SettingsPage: React.FC = () => {
           <h4 className="text-md font-semibold text-red-900">Danger Zone</h4>
         </div>
         <p className="text-red-700 mb-4">
-          Permanently delete all data. This action cannot be undone.
+          Permanently delete all reservations, guests, and reset rooms to defaults. This action cannot be undone.
         </p>
-        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+        <div className="space-y-2">
+          <p className="text-sm text-red-600 font-medium">
+            This will delete:
+          </p>
+          <ul className="text-sm text-red-600 list-disc list-inside space-y-1">
+            <li>All reservations and booking history</li>
+            <li>All guest profiles and preferences</li>
+            <li>Custom room configurations</li>
+            <li>All stored data in browser</li>
+          </ul>
+        </div>
+        <button 
+          onClick={handleDeleteAllData}
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+        >
           Delete All Data
         </button>
       </div>

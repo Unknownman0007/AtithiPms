@@ -58,6 +58,7 @@ interface DataContextType {
   updateReservation: (id: string, reservation: Partial<Reservation>) => void;
   cancelReservation: (id: string) => void;
   deleteGuest: (id: string) => void;
+  deleteAllData: () => void;
   getAvailableRooms: (checkIn: Date, checkOut: Date, roomType?: string) => Room[];
   getRoomOccupancy: (date: Date) => { occupied: number; total: number };
 }
@@ -275,6 +276,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { occupied: occupiedRooms, total: rooms.length };
   };
 
+  const deleteAllData = () => {
+    // Reset to default data
+    setRooms(defaultRooms);
+    setGuests(defaultGuests);
+    setReservations([]);
+    
+    // Clear localStorage
+    localStorage.removeItem('atithi_rooms');
+    localStorage.removeItem('atithi_guests');
+    localStorage.removeItem('atithi_reservations');
+  };
   return (
     <DataContext.Provider value={{
       rooms,
@@ -289,6 +301,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateReservation,
       cancelReservation,
       deleteGuest,
+      deleteAllData,
       getAvailableRooms,
       getRoomOccupancy,
     }}>
