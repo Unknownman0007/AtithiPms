@@ -176,6 +176,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const updatedGuests = [...guests, newGuest];
     setGuests(updatedGuests);
     saveToStorage('atithi_guests', updatedGuests);
+    
+    // Force a re-render to ensure the guest is immediately available
+    setTimeout(() => {
+      setGuests(currentGuests => [...currentGuests]);
+    }, 10);
+    
     return newGuestId;
   };
 

@@ -169,7 +169,7 @@ const ReportsPage: React.FC = () => {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">
-                      {guest ? `${guest.firstName} ${guest.lastName}` : 'Unknown Guest'}
+                     {guest ? `${guest.firstName} ${guest.lastName}` : `Guest ${reservation.guestId.slice(-4)}`}
                     </p>
                     <p className="text-sm text-gray-600">Room {room?.number} • {reservation.status}</p>
                   </div>

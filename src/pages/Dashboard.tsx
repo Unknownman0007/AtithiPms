@@ -123,7 +123,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                     <div key={reservation.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <p className="font-medium text-gray-900">
-                          {guest ? `${guest.firstName} ${guest.lastName}` : 'Unknown Guest'}
+                          {guest ? `${guest.firstName} ${guest.lastName}` : `Guest ${reservation.guestId.slice(-4)}`}
                         </p>
                         <p className="text-sm text-gray-500">Room {room?.number}</p>
                       </div>
@@ -169,7 +169,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
                     <div key={reservation.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <p className="font-medium text-gray-900">
-                          {guest ? `${guest.firstName} ${guest.lastName}` : 'Unknown Guest'}
+                          {guest ? `${guest.firstName} ${guest.lastName}` : `Guest ${reservation.guestId.slice(-4)}`}
                         </p>
                         <p className="text-sm text-gray-500">Room {room?.number}</p>
                       </div>
