@@ -283,7 +283,7 @@ const FrontDeskPage: React.FC = () => {
                             </div>
                             <div>
                               <h3 className="font-semibold text-gray-900">
-                                {guest ? `${guest.firstName} ${guest.lastName}` : 'Unknown Guest'}
+                               {guest ? `${guest.firstName} ${guest.lastName}` : `Guest ${reservation.guestId.slice(-4)}`}
                               </h3>
                               <p className="text-sm text-gray-600">{guest?.email}</p>
                             </div>
@@ -303,7 +303,7 @@ const FrontDeskPage: React.FC = () => {
                             <p className="font-medium">{new Date(reservation.checkIn).toLocaleDateString()}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-gray-600">Check-out</p>
+                         {guest ? `${guest.firstName} ${guest.lastName}` : `Guest ${reservation.guestId.slice(-4)}`}
                             <p className="font-medium">{new Date(reservation.checkOut).toLocaleDateString()}</p>
                           </div>
                         </div>

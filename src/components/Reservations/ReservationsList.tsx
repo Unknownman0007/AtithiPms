@@ -151,7 +151,6 @@ const ReservationsList: React.FC<ReservationsListProps> = ({ reservations, onEdi
                           </p>
                           {reservation.isGroup && (
                             <p className="text-sm text-blue-600 font-medium">
-                              Group: {reservation.groupName}
                             </p>
                           )}
                         </div>
