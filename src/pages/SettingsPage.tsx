@@ -5,7 +5,7 @@ import { Settings, User, Building, CreditCard, Bell, Shield, Database, Download,
 
 const SettingsPage: React.FC = () => {
   const { user } = useAuth();
-  const { deleteAllData } = useData();
+  const { deleteAllData, rooms, guests, reservations } = useData();
   const [activeTab, setActiveTab] = useState('profile');
 
   const tabs = [
@@ -41,6 +41,135 @@ const SettingsPage: React.FC = () => {
     } else if (userInput !== null) {
       alert('Deletion cancelled. You must type exactly "DELETE ALL DATA" to confirm.');
     }
+  };
+
+  const exportToCSV = (data: any[], filename: string) => {
+    if (data.length === 0) {
+      alert('No data to export');
+      return;
+    }
+
+    const headers = Object.keys(data[0]);
+    const csvContent = [
+      headers.join(','),
+      ...data.map(row => 
+        headers.map(header => {
+          const value = row[header];
+          // Handle dates, objects, and strings with commas
+          if (value instanceof Date) {
+            return `"${value.toISOString()}"`;
+          } else if (typeof value === 'object' && value !== null) {
+            return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+          } else if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+            return `"${value.replace(/"/g, '""')}"`;
+          }
+          return value;
+        }).join(',')
+      )
+    ].join('\n');
+
+    downloadFile(csvContent, filename, 'text/csv');
+  };
+
+  const exportToJSON = (data: any, filename: string) => {
+    const jsonContent = JSON.stringify(data, null, 2);
+    downloadFile(jsonContent, filename, 'application/json');
+  };
+
+  const downloadFile = (content: string, filename: string, mimeType: string) => {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportReservations = () => {
+    if (reservations.length === 0) {
+      alert('No reservations to export');
+      return;
+    }
+
+    const exportData = reservations.map(reservation => {
+      const guest = guests.find(g => g.id === reservation.guestId);
+      const room = rooms.find(r => r.id === reservation.roomId);
+      
+      return {
+        reservationId: reservation.id,
+        guestName: guest ? `${guest.firstName} ${guest.lastName}` : 'Unknown Guest',
+        guestEmail: guest?.email || '',
+        guestPhone: guest?.phone || '',
+        roomNumber: room?.number || '',
+        roomType: room?.type || '',
+        checkIn: reservation.checkIn,
+        checkOut: reservation.checkOut,
+        status: reservation.status,
+        rateType: reservation.rateType,
+        totalAmount: reservation.totalAmount,
+        depositPaid: reservation.depositPaid,
+        isGroup: reservation.isGroup,
+        groupName: reservation.groupName || '',
+        notes: reservation.notes || '',
+        createdAt: reservation.createdAt
+      };
+    });
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    exportToCSV(exportData, `atithi-reservations-${timestamp}.csv`);
+  };
+
+  const handleExportGuests = () => {
+    if (guests.length === 0) {
+      alert('No guests to export');
+      return;
+    }
+
+    const exportData = guests.map(guest => {
+      const guestReservations = reservations.filter(r => r.guestId === guest.id);
+      const totalBookings = guestReservations.length;
+      const totalSpent = guestReservations.reduce((sum, r) => sum + r.totalAmount, 0);
+      
+      return {
+        guestId: guest.id,
+        firstName: guest.firstName,
+        lastName: guest.lastName,
+        email: guest.email,
+        phone: guest.phone,
+        address: guest.address,
+        nationality: guest.nationality,
+        preferences: guest.preferences || '',
+        totalBookings,
+        totalSpent,
+        lastBooking: guestReservations.length > 0 
+          ? Math.max(...guestReservations.map(r => new Date(r.createdAt).getTime()))
+          : null
+      };
+    });
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    exportToCSV(exportData, `atithi-guests-${timestamp}.csv`);
+  };
+
+  const handleExportFullDatabase = () => {
+    const fullData = {
+      exportInfo: {
+        exportDate: new Date().toISOString(),
+        systemVersion: '1.0',
+        totalRooms: rooms.length,
+        totalGuests: guests.length,
+        totalReservations: reservations.length
+      },
+      rooms,
+      guests,
+      reservations
+    };
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    exportToJSON(fullData, `atithi-full-backup-${timestamp}.json`);
   };
 
   const renderProfileSettings = () => (
@@ -222,15 +351,24 @@ const SettingsPage: React.FC = () => {
           <p className="text-gray-600 mb-4">Download your hotel data as backup files</p>
           
           <div className="space-y-3">
-            <button className="w-full p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-left">
+            <button 
+              onClick={handleExportReservations}
+              className="w-full p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-left transition-colors"
+            >
               <div className="font-medium">Export Reservations</div>
-              <div className="text-sm text-gray-600">Download all reservation data (CSV)</div>
+              <div className="text-sm text-gray-600">Download all reservation data (CSV) - {reservations.length} records</div>
             </button>
-            <button className="w-full p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-left">
+            <button 
+              onClick={handleExportGuests}
+              className="w-full p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-left transition-colors"
+            >
               <div className="font-medium">Export Guests</div>
-              <div className="text-sm text-gray-600">Download guest profiles (CSV)</div>
+              <div className="text-sm text-gray-600">Download guest profiles (CSV) - {guests.length} records</div>
             </button>
-            <button className="w-full p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-left">
+            <button 
+              onClick={handleExportFullDatabase}
+              className="w-full p-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-left transition-colors"
+            >
               <div className="font-medium">Export Full Database</div>
               <div className="text-sm text-gray-600">Complete system backup (JSON)</div>
             </button>
@@ -378,230 +516,4 @@ const SettingsPage: React.FC = () => {
       case 'notifications':
         return (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Notification Preferences</h3>
-            
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h4 className="text-md font-semibold text-gray-900 mb-4">Email Notifications</h4>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">New Reservations</p>
-                    <p className="text-sm text-gray-600">Get notified when new bookings are made</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">Check-in Reminders</p>
-                    <p className="text-sm text-gray-600">Daily summary of expected arrivals</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">Payment Alerts</p>
-                    <p className="text-sm text-gray-600">Notifications for payment confirmations</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h4 className="text-md font-semibold text-gray-900 mb-4">SMS Notifications</h4>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">Booking Confirmations</p>
-                    <p className="text-sm text-gray-600">Send SMS confirmations to guests</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">Check-in Instructions</p>
-                    <p className="text-sm text-gray-600">Send check-in details before arrival</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      case 'security':
-        return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Security & Access</h3>
-            
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h4 className="text-md font-semibold text-gray-900 mb-4">Password Policy</h4>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">Require Strong Passwords</p>
-                    <p className="text-sm text-gray-600">Minimum 8 characters with special characters</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">Auto Logout</p>
-                    <p className="text-sm text-gray-600">Automatically logout after inactivity</p>
-                  </div>
-                  <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option>15 minutes</option>
-                    <option>30 minutes</option>
-                    <option>1 hour</option>
-                    <option>2 hours</option>
-                    <option>Never</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h4 className="text-md font-semibold text-gray-900 mb-4">User Permissions</h4>
-              
-              <div className="space-y-4">
-                <div>
-                  <p className="font-medium text-gray-900 mb-2">Administrator</p>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>Full system access</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>User management</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>Financial reports</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>System settings</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <p className="font-medium text-gray-900 mb-2">Front Desk Agent</p>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>Reservations</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>Check-in/out</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>Guest management</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <XCircle className="w-4 h-4 text-red-600" />
-                      <span>Financial reports</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <p className="font-medium text-gray-900 mb-2">Training Student</p>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>View reservations</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span>Practice mode</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <XCircle className="w-4 h-4 text-red-600" />
-                      <span>Delete data</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <XCircle className="w-4 h-4 text-red-600" />
-                      <span>Financial access</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600">Manage your account and system preferences</p>
-      </div>
-
-      <div className="flex space-x-6">
-        {/* Sidebar */}
-        <div className="w-64 bg-white rounded-xl shadow-sm border border-gray-200">
-          <div className="p-4">
-            <nav className="space-y-1">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                      activeTab === tab.id
-                        ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
-                  >
-                    <Icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-blue-700' : 'text-gray-400'}`} />
-                    <span className="font-medium">{tab.label}</span>
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 bg-gray-50 rounded-xl p-6">
-          {renderTabContent()}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default SettingsPage;
+            <h3 className
